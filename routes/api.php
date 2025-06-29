@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\BranchController;
+use App\Http\Controllers\Api\CommentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
@@ -18,6 +19,9 @@ use Illuminate\Support\Facades\Artisan;
 
 Route::get('/branches', [BranchController::class, 'index']);
 Route::post('/branches', [BranchController::class, 'store']);
+
+Route::get('/get-comments', [CommentController::class, 'index']);
+Route::post('/comments', [CommentController::class, 'store']);
 
 Route::get('/clear-cache', function () {
     Artisan::call('config:clear');

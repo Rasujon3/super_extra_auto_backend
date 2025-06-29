@@ -17,4 +17,9 @@ class Branch extends Model
     {
         return $this->hasMany(BranchContactInfo::class);
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
