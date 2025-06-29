@@ -5,16 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Branch extends Model
+class BranchContactInfo extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'location_url'
+        'branch_id',
+        'contact_no'
     ];
-    public function contactInfos()
+
+    public function branch()
     {
-        return $this->hasMany(BranchContactInfo::class);
+        return $this->belongsTo(Branch::class);
     }
 }

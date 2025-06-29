@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Artisan;
 */
 
 Route::get('/branches', [BranchController::class, 'index']);
+Route::post('/branches', [BranchController::class, 'store']);
 
 Route::get('/clear-cache', function () {
     Artisan::call('config:clear');
