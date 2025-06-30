@@ -15,6 +15,8 @@ class CommentController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'branch_id' => 'required|exists:branches,id',
+            'offset' => 'nullable|integer|min:0',
+            'limit' => 'nullable|integer|min:1|max:100',
         ]);
 
         if ($validator->fails()) {
@@ -26,8 +28,13 @@ class CommentController extends Controller
         }
 
         try {
+            $offset = $request->input('offset') ?? 0;
+            $limit = $request->input('limit') ?? 2;
+
             $comments = Comment::where('branch_id', $request->branch_id)
                 ->orderBy('created_at', 'desc')
+                ->offset($offset)
+                ->limit($limit)
                 ->get();
 
             return response()->json([
@@ -49,7 +56,7 @@ class CommentController extends Controller
         // ✅ Step 1: Validate the request
         $validator = Validator::make($request->all(), [
             'branch_id' => 'required|exists:branches,id',
-            'author' => 'nullable|string|max:191',
+            'author' => 'required|string|max:191',
             'comment' => 'required|string|max:1000',
         ]);
 
