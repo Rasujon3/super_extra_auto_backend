@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
+use App\Models\Rating;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -57,6 +59,7 @@ class CommentController extends Controller
         $validator = Validator::make($request->all(), [
             'branch_id' => 'required|exists:branches,id',
             'author' => 'required|string|max:191',
+            'rating' => 'nullable|integer',
             'comment' => 'required|string|max:1000',
         ]);
 
@@ -68,6 +71,7 @@ class CommentController extends Controller
             ], 422);
         }
 
+        DB::beginTransaction();
         try {
             // ✅ Step 2: Save comment
             $comment = Comment::create([
@@ -76,6 +80,15 @@ class CommentController extends Controller
                 'comment' => $request->comment,
             ]);
 
+            if (!empty($request->rating)) {
+                // ✅ Step 3: Save ratings
+                $rating = Rating::create([
+                    'branch_id' => $request->branch_id,
+                    'rating' => $request->rating,
+                ]);
+            }
+
+            DB::commit();
             return response()->json([
                 'status' => true,
                 'message' => 'Comment added successfully.',
@@ -83,6 +96,7 @@ class CommentController extends Controller
             ], 201);
 
         } catch (Exception $e) {
+            DB::rollBack();
 
             Log::error('Error in fetching Comment data: ' , [
                 'message' => $e->getMessage(),

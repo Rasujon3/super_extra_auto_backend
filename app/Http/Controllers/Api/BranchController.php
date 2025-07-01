@@ -16,7 +16,7 @@ class BranchController extends Controller
     public function index()
     {
         try {
-            $branches = Branch::with('contactInfos')->get();
+            $branches = Branch::with(['contactInfos', 'ratings'])->get();
 
             return response()->json([
                 'status' => true,
